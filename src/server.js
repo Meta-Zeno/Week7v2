@@ -1,98 +1,140 @@
+require("dotenv").config();
 const express = require("express");
-// the above is same as import just an  older version
+// const { default: mongoose } = require("mongoose");
+const mongoose = require("mongoose");
 
 const app = express();
 
-// app.get("/health", (req, res) => {
-//   res.send("healthy");
-// });
-
-//static.exaple will be a folder
-// app.use("/example", express.static("example"));
-// when hosting, use the first <app.use("here")>, after 5001/"<inserthere"
-// app.use("/anything", express.static("dbz"));
-
-//HTTP Verbs - GET, POST, PUT, DELETE
-
-// const responce = await fetch("http://someaddress.com");// sends GET request
-
-const fakeArr = [];
-//use json data above requests
 app.use(express.json());
 
-//HTTP Verb GET
-app.get("/getAllBooks", (request, response) => {
-  response.send({ message: "success", fakeArr: fakeArr });
+const connection = async () => {
+  await mongoose.connect(process.env.MONGO_URI);
+  // the below is grabbed from the mongodb server make sure to change the username and password in <> and delete the <> symbols
+  console.log("DB conneciton is working");
+};
+
+connection();
+
+const bookSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  author: {
+    type: String,
+  },
+  genre: {
+    type: String,
+  },
 });
 
-app.post("/addBook", (request, response) => {
-  fakeArr.push(request.body);
-  console.log(fakeArr);
-  response.send({ message: "success", newBook: fakeArr[fakeArr.length - 1] });
+const Book = mongoose.model("Book", bookSchema);
+
+app.get("/books", async (request, response) => {
+  try {
+    const books = await Book.find();
+    return response.status(200).json({ data: books });
+  } catch (error) {
+    return response.status(400).json(error);
+  }
 });
 
-app.post("/book", (request, response) => {
-  console.log(request.body);
-  const newBook = {
+app.get("/books/getfirstbook", async (request, response) => {
+  try {
+    const books = await Book.find();
+    return response.status(200).json({ data: books[0] });
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+});
+
+app.post("/books", async (request, response) => {
+  const book = await Book.create({
     title: request.body.title,
     author: request.body.author,
     genre: request.body.genre,
-  };
-
-  fakeArr.push(newBook);
-
-  const successResponse = {
-    message: "Book successfully added!",
-    book: newBook,
-  };
-
-  response.send(successResponse);
+  });
+  console.log("book: ", book);
+  response.send({ message: "successfully created a new book", book: book });
+  //PUT THE BELOW AFTER BOOK.CREATE({PLACE IT HERE!!!!})
+  // try {
+  //   const newBook = await Book.create(request.body);
+  //   return response.status(201).json(newBook);
+  // } catch (error) {
+  //   return response.status(400).json(error);
+  // }
 });
+
+app.put("/books", (request, reponse) => {});
+
+app.delete("/books", (request, response) => {});
 
 app.listen(5001, () => {
   console.log("Server is listening on port 5001");
 });
 
-// app.put("/books", (request, response) => {
-//   console.log("fakArr", fakeArr);
+// MICHAELS WORKS
 
-// const bookToUpdate = fakeArr.find(
-//   (book) => book.title === request.body.title
-// );
-// console.log("book to update: ", bookToUpdate);
+// const express = require("express");
+// const mongoose = require("mongoose");
 
-// bookToUpdate.author = request.body.newAuthor;
+// const app = express();
 
-// console.log("book to update: ", bookToUpdate);
+// app.use(express.json());
 
-// response.send({ message: "book has been updated "});
-// })
+// const connection = async () => {
+//   await mongoose.connect("");
+//   console.log("DB connection is working");
+// };
 
-// app.delete("/books", (request, response) ={
-//   const bookToDelete = fakeArr.find(
-//     (book) => book.title === request.body.title
-//   );
+// connection();
 
-//   const index = fakeArr.indexOf(bookToDelete);
-//   fakeArr.splice(index, 1);
+// // mongoose docs: https://mongoosejs.com/docs/guide.html
 
-//     response.send({ message: "Book has been deleted"});
+// const bookSchema = new mongoose.Schema({
+//   title: {
+//     type: String,
+//     required: true,
+//     unique: true,
+//   },
+//   author: {
+//     type: String,
+//   },
+//   genre: {
+//     type: String,
+//   },
 // });
-//
 
-//instructions to do after the server setup
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+// const Book = mongoose.model("Book", bookSchema);
+
+// const logTypeOfResult = async (result) => {
+//   console.log(`Typeof result: ${typeof result} - result: ${result}`);
+// };
+
+// // https://mongoosejs.com/docs/models.html (look at constructing documents)
+// // Add a single book to the db
+// app.post("/books", (request, response) => {
+//   // Add a single book to the db
+// });
+
+// // https://mongoosejs.com/docs/api/model.html#Model.find()
+app.get("/books/getAllBooks", async (request, response) => {
+  //   // get all books from the db
+  const books = await Book.find({});
+  response.send({ message: "success all the books", books: books });
+});
+
+// // https://mongoosejs.com/docs/api/model.html#Model.findOneAndUpdate()
+// //              Or !!!!!!!!!!!!!!!!!!!!!
+// // https://mongoosejs.com/docs/api/model.html#Model.updateOne()
+// app.put("/books", (request, reponse) => {
+//   // update a single book's author by title
+// });
+
+// // https://mongoosejs.com/docs/guide.html - you'll have to look at the docs and figure this one out!
+// app.delete("/books", (request, response) => {});
+
+// app.listen(5001, () => {
+//   console.log("Server is listening on port 5001");
+// });
