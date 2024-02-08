@@ -16,16 +16,6 @@ connection();
 //Use the books/router #######
 app.use(bookRouter);
 
-//Get Responce from server!!
-app.get("/books", async (request, response) => {
-  try {
-    const books = await Book.find();
-    return response.status(200).json({ data: books });
-  } catch (error) {
-    return response.status(400).json(error);
-  }
-});
-
 //Get book by using <FIND> request function
 app.get("/books/getfirstbook", async (request, response) => {
   try {
