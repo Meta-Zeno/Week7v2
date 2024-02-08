@@ -1,36 +1,22 @@
 require("dotenv").config();
 const express = require("express");
-
 const mongoose = require("mongoose");
+
+//import connection from db/connection#######
+const connection = require("./db/connection");
+//import connection from books/router########
+const bookRouter = require("./books/routes");
 
 const app = express();
 
 app.use(express.json());
 
-const connection = async () => {
-  await mongoose.connect(process.env.MONGO_URI);
-  // the below is grabbed from the mongodb server make sure to change the username and password in <> and delete the <> symbols
-  console.log("DB conneciton is working");
-};
-
 connection();
 
-const bookSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  author: {
-    type: String,
-  },
-  genre: {
-    type: String,
-  },
-});
+//Use the books/router #######
+app.use(bookRouter);
 
-const Book = mongoose.model("Book", bookSchema);
-
+//Get Responce from server!!
 app.get("/books", async (request, response) => {
   try {
     const books = await Book.find();
@@ -40,6 +26,7 @@ app.get("/books", async (request, response) => {
   }
 });
 
+//Get book by using <FIND> request function
 app.get("/books/getfirstbook", async (request, response) => {
   try {
     const books = await Book.find();
@@ -49,23 +36,7 @@ app.get("/books/getfirstbook", async (request, response) => {
   }
 });
 
-app.post("/books", async (request, response) => {
-  const book = await Book.create({
-    title: request.body.title,
-    author: request.body.author,
-    genre: request.body.genre,
-  });
-  console.log("book: ", book);
-  response.send({ message: "successfully created a new book", book: book });
-  //PUT THE BELOW AFTER BOOK.CREATE({PLACE IT HERE!!!!})
-  // try {
-  //   const newBook = await Book.create(request.body);
-  //   return response.status(201).json(newBook);
-  // } catch (error) {
-  //   return response.status(400).json(error);
-  // }
-});
-
+//UPDATE a new book entry in the database using PUT request function.
 app.put("/books/updateAuthor", async (request, response) => {
   try {
     const title = request.body.title;
@@ -88,6 +59,7 @@ app.put("/books/updateAuthor", async (request, response) => {
   }
 });
 
+// DELETE a book entry in the database using DELETE request function.
 app.delete("/books", async (request, response) => {
   try {
     const deleteResult = await Book.findOneAndDelete({
@@ -102,6 +74,7 @@ app.delete("/books", async (request, response) => {
   }
 });
 
+// DELETE MULTIPLE entry in the database using DELETEMANY> request function.
 app.delete("/books", async (request, response) => {
   try {
     const deleteResult = await Book.deleteMany();
