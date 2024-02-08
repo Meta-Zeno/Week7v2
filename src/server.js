@@ -1,6 +1,6 @@
 require("dotenv").config();
 const express = require("express");
-// const { default: mongoose } = require("mongoose");
+
 const mongoose = require("mongoose");
 
 const app = express();
@@ -66,75 +66,60 @@ app.post("/books", async (request, response) => {
   // }
 });
 
-app.put("/books", (request, reponse) => {});
+app.put("/books/updateAuthor", async (request, response) => {
+  try {
+    const title = request.body.title;
+    const updatedAuthor = request.body.author;
 
-app.delete("/books", (request, response) => {});
+    // Find the book by title and update the author
+    const updatedBook = await Book.findOneAndUpdate(
+      { title: title },
+      { $set: { author: updatedAuthor } },
+      { new: true }
+    );
+
+    if (!updatedBook) {
+      return response.status(404).send({ message: "Error: Book not found" });
+    }
+
+    response.send({ message: "Success: Author updated", book: updatedBook });
+  } catch (error) {
+    response.status(500).send({ message: "Error: Unable to update author" });
+  }
+});
+
+app.delete("/books", async (request, response) => {
+  try {
+    const deleteResult = await Book.findOneAndDelete({
+      title: request.body.title,
+    });
+    return response.status(200).json({
+      message: "You have deleted a book successfully",
+      data: deleteResult,
+    });
+  } catch (error) {
+    return response.status(400).json({ message: error.message });
+  }
+});
+
+app.delete("/books", async (request, response) => {
+  try {
+    const deleteResult = await Book.deleteMany();
+    return response
+      .status(200)
+      .json({ message: "All books deleted successfully", data: deleteResult });
+  } catch (error) {
+    return response.status(400).json({ message: error.message });
+  }
+});
 
 app.listen(5001, () => {
   console.log("Server is listening on port 5001");
 });
 
-// MICHAELS WORKS
-
-// const express = require("express");
-// const mongoose = require("mongoose");
-
-// const app = express();
-
-// app.use(express.json());
-
-// const connection = async () => {
-//   await mongoose.connect("");
-//   console.log("DB connection is working");
-// };
-
-// connection();
-
-// // mongoose docs: https://mongoosejs.com/docs/guide.html
-
-// const bookSchema = new mongoose.Schema({
-//   title: {
-//     type: String,
-//     required: true,
-//     unique: true,
-//   },
-//   author: {
-//     type: String,
-//   },
-//   genre: {
-//     type: String,
-//   },
-// });
-
-// const Book = mongoose.model("Book", bookSchema);
-
-// const logTypeOfResult = async (result) => {
-//   console.log(`Typeof result: ${typeof result} - result: ${result}`);
-// };
-
 // // https://mongoosejs.com/docs/models.html (look at constructing documents)
-// // Add a single book to the db
-// app.post("/books", (request, response) => {
-//   // Add a single book to the db
-// });
-
 // // https://mongoosejs.com/docs/api/model.html#Model.find()
-app.get("/books/getAllBooks", async (request, response) => {
-  //   // get all books from the db
-  const books = await Book.find({});
-  response.send({ message: "success all the books", books: books });
-});
-
 // // https://mongoosejs.com/docs/api/model.html#Model.findOneAndUpdate()
 // //              Or !!!!!!!!!!!!!!!!!!!!!
 // // https://mongoosejs.com/docs/api/model.html#Model.updateOne()
-// app.put("/books", (request, reponse) => {
-//   // update a single book's author by title
-// });
-
 // // https://mongoosejs.com/docs/guide.html - you'll have to look at the docs and figure this one out!
-// app.delete("/books", (request, response) => {});
-
-// app.listen(5001, () => {
-//   console.log("Server is listening on port 5001");
-// });
