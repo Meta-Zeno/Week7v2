@@ -15,7 +15,7 @@ bookRouter.get("/books/getAllBooks", getAllBooks);
 bookRouter.post("/books/addBook", addBook);
 bookRouter.get("/books/getFirstBook", getFirstBook);
 bookRouter.put("/books/updateAuthor", updateAuthor);
-bookRouter.put("/books/findOneAndUpdate", findOneAndDelete);
+bookRouter.delete("/books/findOneAndDelete", findOneAndDelete);
 bookRouter.delete("/books/deleteResult", deleteResult);
 //###############################################
 //anatomy of a route
