@@ -58,6 +58,20 @@ const updateAuthor = async (request, response) => {
   }
 };
 
+const findOneAndUpdate = async (request, response) => {
+  try {
+    const deleteResult = await Book.findOneAndDelete({
+      title: request.body.title,
+    });
+    return response.status(200).json({
+      message: "You have deleted a book successfully",
+      data: deleteResult,
+    });
+  } catch (error) {
+    return response.status(400).json({ message: error.message });
+  }
+};
+
 //##############################################
 // CAN ADD NEW FUNCTIONS IE DELETE, UPDATE
 module.exports = {
@@ -66,6 +80,7 @@ module.exports = {
   findBook: findBook,
   getFirstBook: getFirstBook,
   updateAuthor: updateAuthor,
+  findOneAndUpdate: findOneAndUpdate,
 
   //##############################################
 };

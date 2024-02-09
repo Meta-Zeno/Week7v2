@@ -16,25 +16,6 @@ connection();
 //Use the books/router #######
 app.use(bookRouter);
 
-//Get book by using <FIND> request function
-
-//UPDATE a new book entry in the database using PUT request function.
-
-// DELETE a book entry in the database using DELETE request function.
-app.delete("/books", async (request, response) => {
-  try {
-    const deleteResult = await Book.findOneAndDelete({
-      title: request.body.title,
-    });
-    return response.status(200).json({
-      message: "You have deleted a book successfully",
-      data: deleteResult,
-    });
-  } catch (error) {
-    return response.status(400).json({ message: error.message });
-  }
-});
-
 // DELETE MULTIPLE entry in the database using DELETEMANY> request function.
 app.delete("/books", async (request, response) => {
   try {
