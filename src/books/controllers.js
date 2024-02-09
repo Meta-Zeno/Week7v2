@@ -1,22 +1,29 @@
 const Book = require("./model");
-//##############################################
-const addBook =
-  //############################################
 
-  //CREATES A BOOK
-  async (request, response) => {
-    try {
-      const book = await Book.create({
-        title: request.body.title,
-        author: request.body.author,
-        genre: request.body.genre,
-      });
-      console.log("book: ", book);
-      response.send({ message: "successfully created a new book", book: book });
-    } catch (error) {
-      response.send({ message: "its gone pete tong", error: error });
-    }
-  };
+//Get All Books
+const getAllBooks = async (request, response) => {
+  try {
+    const books = await Book.find({});
+    response.json({ message: "success all the books", books: books });
+  } catch (error) {
+    response.status(500).json({ message: error.message });
+  }
+};
+
+//CREATES A BOOK
+const addBook = async (request, response) => {
+  try {
+    const book = await Book.create({
+      title: request.body.title,
+      author: request.body.author,
+      genre: request.body.genre,
+    });
+    console.log("book: ", book);
+    response.send({ message: "successfully created a new book", book: book });
+  } catch (error) {
+    response.send({ message: "its gone pete tong", error: error });
+  }
+};
 
 const findBook = async (request, response) => {
   try {
@@ -87,6 +94,7 @@ const deleteResult = async (request, response) => {
 // CAN ADD NEW FUNCTIONS IE DELETE, UPDATE
 module.exports = {
   //##############################################
+  getAllBooks: getAllBooks,
   addBook: addBook,
   findBook: findBook,
   getFirstBook: getFirstBook,

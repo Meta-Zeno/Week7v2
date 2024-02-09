@@ -8,6 +8,7 @@ const { getFirstBook } = require("./controllers");
 const { updateAuthor } = require("./controllers");
 const { findOneAndUpdate } = require("./controllers");
 const { deleteResult } = require("./controllers");
+const { getAllBooks } = require("./controllers");
 
 //Create a new book entry in the database using POST request function.
 //##############################################
@@ -17,6 +18,7 @@ bookRouter.get("/books/getFirstBook", getFirstBook);
 bookRouter.put("/books/updateAuthor", updateAuthor);
 bookRouter.put("/books/updateAuthor", findOneAndUpdate);
 bookRouter.put("/books/updateAuthor", deleteResult);
+bookRouter.put("/books/updateAuthor", getAllBooks);
 
 //###############################################
 //anatomy of a route
