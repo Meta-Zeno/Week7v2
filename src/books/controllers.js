@@ -25,15 +25,6 @@ const addBook = async (request, response) => {
   }
 };
 
-const findBook = async (request, response) => {
-  try {
-    const books = await Book.find();
-    return response.status(200).json({ data: books });
-  } catch (error) {
-    return response.status(400).json(error);
-  }
-};
-
 const getFirstBook = async (request, response) => {
   try {
     const books = await Book.find();
@@ -65,7 +56,7 @@ const updateAuthor = async (request, response) => {
   }
 };
 
-const findOneAndUpdate = async (request, response) => {
+const findOneAndDelete = async (request, response) => {
   try {
     const deleteResult = await Book.findOneAndDelete({
       title: request.body.title,
@@ -96,10 +87,9 @@ module.exports = {
   //##############################################
   getAllBooks: getAllBooks,
   addBook: addBook,
-  findBook: findBook,
   getFirstBook: getFirstBook,
   updateAuthor: updateAuthor,
-  findOneAndUpdate: findOneAndUpdate,
+  findOneAndDelete: findOneAndDelete,
   deleteResult: deleteResult,
 
   //##############################################
