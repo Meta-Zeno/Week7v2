@@ -16,17 +16,7 @@ connection();
 //Use the books/router #######
 app.use(bookRouter);
 
-// DELETE MULTIPLE entry in the database using DELETEMANY> request function.
-app.delete("/books", async (request, response) => {
-  try {
-    const deleteResult = await Book.deleteMany();
-    return response
-      .status(200)
-      .json({ message: "All books deleted successfully", data: deleteResult });
-  } catch (error) {
-    return response.status(400).json({ message: error.message });
-  }
-});
+// DELETE MULTIPLE entry in the database using DELETEMANY> request function
 
 app.listen(5001, () => {
   console.log("Server is listening on port 5001");

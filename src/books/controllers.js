@@ -72,6 +72,17 @@ const findOneAndUpdate = async (request, response) => {
   }
 };
 
+const deleteResult = async (request, response) => {
+  try {
+    const deleteResult = await Book.deleteMany();
+    return response
+      .status(200)
+      .json({ message: "All books deleted successfully", data: deleteResult });
+  } catch (error) {
+    return response.status(400).json({ message: error.message });
+  }
+};
+
 //##############################################
 // CAN ADD NEW FUNCTIONS IE DELETE, UPDATE
 module.exports = {
@@ -81,6 +92,7 @@ module.exports = {
   getFirstBook: getFirstBook,
   updateAuthor: updateAuthor,
   findOneAndUpdate: findOneAndUpdate,
+  deleteResult: deleteResult,
 
   //##############################################
 };
