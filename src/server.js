@@ -17,37 +17,8 @@ connection();
 app.use(bookRouter);
 
 //Get book by using <FIND> request function
-app.get("/books/getfirstbook", async (request, response) => {
-  try {
-    const books = await Book.find();
-    return response.status(200).json({ data: books[0] });
-  } catch (error) {
-    return response.status(400).json(error);
-  }
-});
 
 //UPDATE a new book entry in the database using PUT request function.
-app.put("/books/updateAuthor", async (request, response) => {
-  try {
-    const title = request.body.title;
-    const updatedAuthor = request.body.author;
-
-    // Find the book by title and update the author
-    const updatedBook = await Book.findOneAndUpdate(
-      { title: title },
-      { $set: { author: updatedAuthor } },
-      { new: true }
-    );
-
-    if (!updatedBook) {
-      return response.status(404).send({ message: "Error: Book not found" });
-    }
-
-    response.send({ message: "Success: Author updated", book: updatedBook });
-  } catch (error) {
-    response.status(500).send({ message: "Error: Unable to update author" });
-  }
-});
 
 // DELETE a book entry in the database using DELETE request function.
 app.delete("/books", async (request, response) => {
